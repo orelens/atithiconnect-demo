@@ -4,6 +4,10 @@ import { useEffect } from "react";
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 
+/** Phones, tablets and small screens get the light, static hero (no 3D, parallax or ambient loops). */
+export const LITE_MQ = "(max-width: 900px), (hover: none), (pointer: coarse)";
+export const isLite = () => typeof window !== "undefined" && window.matchMedia(LITE_MQ).matches;
+
 export function useMotion() {
   useEffect(() => {
     const root = document.documentElement;
@@ -11,6 +15,8 @@ export function useMotion() {
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     root.classList.add("motion-ready");
     if (reduced) root.classList.add("reduced");
+    const lite = isLite();
+    root.classList.toggle("lite", lite);
 
     // stagger index for reveal groups
     document.querySelectorAll<HTMLElement>("[data-stagger]").forEach((g) => {
@@ -41,12 +47,13 @@ export function useMotion() {
       requestAnimationFrame(step);
     }
 
-    if (reduced) return () => io.disconnect();
+    if (reduced || lite) return () => io.disconnect();
 
     // pointer-driven 3D tilt (desktop only)
     type T = { el: HTMLElement; max: number; tx: number; ty: number; x: number; y: number; mx: number; my: number; hover: boolean };
     const tilts: T[] = fine ? Array.from(document.querySelectorAll<HTMLElement>("[data-tilt]")).map((el) => ({ el, max: Number(el.dataset.tilt || 8), tx: 0, ty: 0, x: 0, y: 0, mx: 50, my: 50, hover: false })) : [];
     const global = tilts.filter((t) => t.el.hasAttribute("data-tilt-global"));
+    let onMoveK: ((e: PointerEvent) => void) | null = null, lastE: PointerEvent | null = null;
     function onMove(e: PointerEvent) {
       for (const t of tilts) {
         const r = t.el.getBoundingClientRect();
@@ -59,22 +66,25 @@ export function useMotion() {
         } else if (t.hover) { t.hover = false; t.tx = 0; t.ty = 0; }
       }
     }
-    if (tilts.length) window.addEventListener("pointermove", onMove, { passive: true });
+    if (tilts.length) window.addEventListener("pointermove", (onMoveK = (e: PointerEvent) => { lastE = e; kick(); }), { passive: true });
     void global;
 
     // scroll-linked progress (--p: 0 entering bottom -> 1 at centre; --q: 0..1 as it leaves the top)
     const scrollers = Array.from(document.querySelectorAll<HTMLElement>("[data-scroll]"));
     let raf = 0, dirty = true;
-    const onScroll = () => { dirty = true; };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
+    const onScroll = () => { dirty = true; kick(); };
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
 
     const loop = () => {
+      raf = 0; let moving = false;
+      if (lastE) { onMove(lastE); lastE = null; } // pointer work throttled to one per frame
       for (const t of tilts) {
         const k = 0.085;
         const nx = lerp(t.x, t.tx, k), ny = lerp(t.y, t.ty, k);
         if (Math.abs(nx - t.x) > 0.0005 || Math.abs(ny - t.y) > 0.0005) {
-          t.x = nx; t.y = ny;
+          t.x = nx; t.y = ny; moving = true;
           t.el.style.setProperty("--ry", (t.x * t.max).toFixed(3) + "deg");
           t.el.style.setProperty("--rx", (-t.y * t.max).toFixed(3) + "deg");
           t.el.style.setProperty("--px", t.x.toFixed(4)); t.el.style.setProperty("--py", t.y.toFixed(4));
@@ -89,12 +99,12 @@ export function useMotion() {
           el.style.setProperty("--p", p.toFixed(4)); el.style.setProperty("--q", q.toFixed(4));
         }
       }
-      raf = requestAnimationFrame(loop);
+      if (moving) raf = requestAnimationFrame(loop); // sleeps when idle; pointer/scroll wake it
     };
     raf = requestAnimationFrame(loop);
     return () => {
       io.disconnect(); cancelAnimationFrame(raf);
-      window.removeEventListener("pointermove", onMove); window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll);
+      if (onMoveK) window.removeEventListener("pointermove", onMoveK); window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll);
     };
   }, []);
 }

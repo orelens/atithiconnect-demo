@@ -2,10 +2,12 @@ import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "rea
 import { Link } from "react-router-dom";
 import "../landing.css";
 import "../motion.css";
-import { useMotion } from "../motion";
+import { useMotion, isLite } from "../motion";
+import Pricing from "../components/Pricing";
+import { CONTACT, ContactButtons, WhatsAppFab } from "../contact";
 
 const B = import.meta.env.BASE_URL;
-const MAIL = "graphicdesigner.nikunj@gmail.com";
+const MAIL = CONTACT.email;
 
 /* ---------- small icons (stroke, 24px) ---------- */
 const I = ({ d, children }: { d?: string; children?: ReactNode }) => (
@@ -129,7 +131,7 @@ const faqs = [
   { q: "What does my hotel need to start?", a: "Guest Wi‑Fi, a phone or computer at reception, and a screen or tablet in the kitchen if you serve food. We prepare your menu, rooms and QR cards with you." },
   { q: "Can I change the menu, prices and Wi‑Fi myself?", a: "Yes. The owner dashboard lets you edit dishes, prices, Wi‑Fi details, nearby places and offers at any time." },
   { q: "Does it work in Hindi?", a: "Yes. Guests can switch between English and हिंदी with one tap." },
-  { q: "How much does it cost?", a: "It depends on your number of rooms and the features you want. We walk you through it on a short free demo call." },
+  { q: "How much does it cost?", a: "Core starts at ₹1,499/month and goes by rooms (₹149 down to ₹99 per room), plus only the add-ons you pick. Use the pricing calculator above to see your exact total." },
   { q: "Is this demo real?", a: "This website uses a sample hotel (Hotel Demo Indore) with sample guests, so you can click through every screen safely. Nothing is billed." },
 ];
 
@@ -155,7 +157,7 @@ export default function Landing() {
     setSent(true);
   }
 
-  const nav = [["#how", "How it works"], ["#features", "Features"], ["#screens", "Screens"], ["#faq", "FAQ"]];
+  const nav = [["#how", "How it works"], ["#features", "Features"], ["#screens", "Screens"], ["#pricing", "Pricing"], ["#faq", "FAQ"]];
   const sc = screens[tab];
 
   return (
@@ -426,6 +428,9 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* PRICING */}
+      <Pricing />
+
       {/* FAQ */}
       <section className="faq" id="faq">
         <div className="mk-wrap faq-in">
@@ -457,6 +462,7 @@ export default function Landing() {
               <h2>See AtithiConnect working for <mark>your hotel.</mark></h2>
               <p>A short online call. We show every screen with your rooms and menu, and answer your questions, including pricing.</p>
               <ul><li>{icons.check} Free, no commitment</li><li>{icons.check} 20 minutes on Google Meet</li><li>{icons.check} Hindi or English</li></ul>
+              <ContactButtons variant="light" />
             </div>
             {sent ? (
               <div className="cc-form thanks">
@@ -489,23 +495,26 @@ export default function Landing() {
           <div>
             <img src={`${B}brand/logo-white.png`} alt="AtithiConnect" className="foot-logo" />
             <p>Connect guest services with hotel operations.</p>
+            <div className="foot-contact"><ContactButtons variant="light" /></div>
           </div>
           <div className="foot-links">
-            <a href="#how">How it works</a><a href="#features">Features</a><a href="#demo">Live demo</a><a href="#contact">Book a demo</a>
+            <a href="#how">How it works</a><a href="#features">Features</a><a href="#demo">Live demo</a><a href="#pricing">Pricing</a><a href="#contact">Book a demo</a>
           </div>
         </div>
         <div className="mk-wrap foot-base"><span>© 2026 AtithiConnect</span><span>Demo uses a sample hotel and sample guests.</span></div>
       </footer>
+      <WhatsAppFab />
     </div>
   );
 }
 
 function DemoVideo() {
   const ref = useRef<HTMLVideoElement>(null);
+  const [lite] = useState(isLite);
   const [muted, setMuted] = useState(true);
   useEffect(() => {
     const v = ref.current;
-    if (!v || !("IntersectionObserver" in window)) return;
+    if (!v || lite || !("IntersectionObserver" in window)) return;
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) v.play().catch(() => {});
       else v.pause();
@@ -522,9 +531,9 @@ function DemoVideo() {
     <>
       <div className="vid-frame" data-scroll>
         <video ref={ref} src={`${B}video/atithiconnect-promo.mp4`} poster={`${B}video/atithiconnect-promo-poster.jpg`}
-          muted loop playsInline controls preload="metadata" onVolumeChange={(e) => setMuted(e.currentTarget.muted)}
+          muted={!lite} loop playsInline controls preload={lite ? "none" : "metadata"} onVolumeChange={(e) => setMuted(e.currentTarget.muted)}
           aria-label="AtithiConnect promo video" />
-        {muted ? (
+        {muted && !lite ? (
           <button className="vid-sound" onClick={toggle}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5z" /><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12" /></svg>
             Tap for sound

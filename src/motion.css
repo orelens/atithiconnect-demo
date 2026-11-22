@@ -161,3 +161,43 @@
   .mk .f2 { left: calc(50% - 10px); }
   .mk .f3 { display: none; }
 }
+
+/* ===== Performance pass =====
+   Desktop: no animated blur filters (reveals and card entrances are opacity + translate only),
+   ambient blobs use soft gradients instead of filter: blur. */
+.mk .rv { filter: none; transition: opacity 1s var(--eo), translate 1.1s var(--eo); transition-delay: calc(var(--i, 0) * 85ms); }
+@keyframes fadeUp { from { opacity: 0; translate: 0 22px; } }
+@keyframes cardIn { from { opacity: 0; scale: .9; } to { opacity: 1; scale: 1; } }
+.hero-amb i { filter: none; background-size: 100% 100%; }
+.hero-amb .b1 { background: radial-gradient(circle, rgba(155,107,255,.9), rgba(155,107,255,0) 68%); }
+.hero-amb .b2 { background: radial-gradient(circle, rgba(195,166,255,.9), rgba(195,166,255,0) 68%); }
+.hero-amb .b3 { background: radial-gradient(circle, rgba(61,12,207,.9), rgba(61,12,207,0) 68%); }
+.hp-glow { filter: none; background: radial-gradient(closest-side, rgba(183,140,255,.7), rgba(183,140,255,0)); }
+.mk .float { will-change: auto; }
+.mk .vid-frame { will-change: auto; }
+
+/* Phones, tablets, touch and < 900px: static, nicely styled hero with a simple fade-in. */
+@media (max-width: 900px), (hover: none), (pointer: coarse) {
+  .hero-amb .b1, .hero-amb .b2, .hero-amb .b3, .hero-amb .sweep, .hero-amb .grain { display: none; }
+  .hero .ribbons path { animation: none; }
+  .hero .hero-copy { translate: none !important; opacity: 1 !important; }
+  .hp-wrap { perspective: none; animation: liteIn .8s ease-out both .2s; }
+  .hp-wrap .stage { transform: none !important; animation: none !important; rotate: none !important; will-change: auto; transform-style: flat; }
+  .mk .hp, .hp { animation: none !important; transform: none; }
+  .hp-glow { transform: none; opacity: .55; }
+  .hp-screen::after { display: none; }
+  .mk .float, .mk .float > * { animation: none !important; will-change: auto; }
+  .mk .float { opacity: 1; animation: liteIn .8s ease-out both .6s !important; }
+  .mk .f1, .mk .f2, .mk .f3 { transform: none; }
+  .hp-tile.on { animation: none; }
+  .hero h1.split .w > *, .hero h1.split mark { animation: liteIn .7s ease-out both !important; }
+  .intro > * { animation-duration: .7s !important; }
+  .mk-nav.solid { backdrop-filter: none; -webkit-backdrop-filter: none; background: #fff; }
+  .mk .rv { translate: 0 18px; transition: opacity .6s ease-out, translate .6s ease-out; transition-delay: calc(var(--i, 0) * 50ms); }
+  .mk .rv.in { translate: 0 0; }
+  .mk .vid-frame { transform: none !important; }
+  .mk .feat, .mk .feat:hover { transform: none; }
+  .vid-sound { backdrop-filter: none; }
+  .mk .btn-white::after, .mk .btn-violet::after { display: none; }
+}
+@keyframes liteIn { from { opacity: 0; translate: 0 14px; } to { opacity: 1; translate: 0 0; } }
