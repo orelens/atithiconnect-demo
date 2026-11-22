@@ -1,0 +1,35 @@
+{
+  "id": "/atithiconnect-demo/kitchen",
+  "name": "AtithiConnect Kitchen",
+  "short_name": "Kitchen",
+  "description": "Kitchen display: new food orders, live.",
+  "start_url": "/atithiconnect-demo/kitchen",
+  "scope": "/atithiconnect-demo/kitchen",
+  "display": "standalone",
+  "display_override": [
+    "standalone"
+  ],
+  "orientation": "any",
+  "background_color": "#5B12F0",
+  "theme_color": "#5B12F0",
+  "icons": [
+    {
+      "src": "/atithiconnect-demo/pwa/kitchen-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/atithiconnect-demo/pwa/kitchen-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/atithiconnect-demo/pwa/kitchen-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

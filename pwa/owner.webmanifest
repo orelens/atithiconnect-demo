@@ -1,0 +1,35 @@
+{
+  "id": "/atithiconnect-demo/owner",
+  "name": "AtithiConnect Owner",
+  "short_name": "Owner",
+  "description": "Owner dashboard: today's hotel at a glance.",
+  "start_url": "/atithiconnect-demo/owner",
+  "scope": "/atithiconnect-demo/owner",
+  "display": "standalone",
+  "display_override": [
+    "standalone"
+  ],
+  "orientation": "any",
+  "background_color": "#5B12F0",
+  "theme_color": "#5B12F0",
+  "icons": [
+    {
+      "src": "/atithiconnect-demo/pwa/owner-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/atithiconnect-demo/pwa/owner-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/atithiconnect-demo/pwa/owner-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
