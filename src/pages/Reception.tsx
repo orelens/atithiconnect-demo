@@ -1,5 +1,4 @@
 import { useMemo, useState, type CSSProperties } from "react";
-import { Link } from "react-router-dom";
 import { rooms, STAFF, type TicketStatus } from "../data";
 import { ago, useDemo } from "../store";
 
@@ -29,17 +28,16 @@ export default function Reception() {
   return (
     <div className="staff-page" onClick={arm}>
       <header className="desk-head">
-        <div className="kicker">ATITHI</div>
+        <img className="app-logo" src={`${import.meta.env.BASE_URL}brand/logo-white.png`} alt="AtithiConnect" />
         <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "flex-start", flexWrap: "wrap" }}>
           <div>
-            <h1 className="head-title">The desk</h1>
+            <h1 className="head-title">Reception desk</h1>
             <div className="head-sub">Hotel Demo Indore · {STAFF.reception}</div>
-            <div className="head-note">Tap anywhere to arm the sound for new requests.</div>
+            <div className="head-note">Every guest request lands here. Accept it, start it, mark it done.</div>
           </div>
           <div className="head-actions">
             <span className={"pill" + (armed ? " live dot" : "")}>{armed ? "Live" : "Sound off"}</span>
             <span className="pill">Alerts</span>
-            <Link to="/" className="pill">Out</Link>
           </div>
         </div>
       </header>

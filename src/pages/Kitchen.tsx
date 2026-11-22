@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { HOTEL, type Order, type OrderStatus } from "../data";
 import { ago, useDemo } from "../store";
 
@@ -28,13 +27,13 @@ export default function Kitchen() {
     <div className="kitchen" onClick={arm}>
       <header className="kitch-head">
         <div>
-          <div className="kicker">KITCHEN DISPLAY</div>
+          <img className="app-logo" src={`${import.meta.env.BASE_URL}brand/logo-white.png`} alt="AtithiConnect" />
+          <div className="kicker" style={{marginTop:10}}>KITCHEN DISPLAY</div>
           <h1 className="head-title" style={{ fontSize: 40 }}>{HOTEL}</h1>
         </div>
         <div className="head-actions" style={{ marginTop: 8 }}>
-          <span style={{ fontSize: 13, color: "#9a9288", marginRight: 8 }}>Tap to arm the new-order sound</span>
+          <span style={{ fontSize: 13, color: "rgba(255,255,255,.6)", marginRight: 8 }}>Tap to arm the new-order sound</span>
           <span className="pill">Alerts</span>
-          <Link to="/" className="pill">Out</Link>
         </div>
       </header>
       <div className="k-cols">

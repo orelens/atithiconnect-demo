@@ -29,7 +29,7 @@ export default function GuestFood() {
         <div className="veil" />
         <div className="inner">
           <div className="g-top">
-            <div className="g-mark">ATITHI</div>
+            <img className="app-logo" src={`${import.meta.env.BASE_URL}brand/logo-white.png`} alt="AtithiConnect" />
             <button className="lang-btn" onClick={() => setLang(lang === "en" ? "hi" : "en")}>{lang === "en" ? "हिंदी" : "EN"}</button>
           </div>
           <h1>{t("Hotel Demo Indore", "होटल डेमो इंदौर")}</h1>

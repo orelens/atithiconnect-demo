@@ -13,7 +13,7 @@ export default function GuestMore() {
       <div className="section" style={{ paddingTop: 28 }}>
         <h2>{t("Your stay", "आपका ठहरना")}</h2>
         <div className="order-card">
-          <div className="oid" style={{ fontFamily: "var(--serif)", fontWeight: 500, fontSize: 26 }}>{lang === "hi" ? GUEST.formalHi : GUEST.formal}</div>
+          <div className="oid" style={{ fontFamily: "var(--serif)", fontWeight: 500, fontSize: 20 }}>{lang === "hi" ? GUEST.formalHi : GUEST.formal}</div>
           <div className="order-items">
             {t("Room", "कमरा")} {GUEST.room} · {t("Checkout " + GUEST.checkout, "चेकआउट " + GUEST.checkoutHi)}
           </div>
@@ -48,7 +48,7 @@ export default function GuestMore() {
         <h2>{t("Nearby", "आस-पास")}</h2>
         {nearby.map((n) => (
           <div key={n.name} className="order-card" style={{ marginBottom: 8 }}>
-            <div className="oid" style={{ fontFamily: "var(--serif)", fontWeight: 500, fontSize: 22 }}>{lang === "hi" ? n.nameHi : n.name}</div>
+            <div className="oid" style={{ fontFamily: "var(--serif)", fontWeight: 600, fontSize: 17 }}>{lang === "hi" ? n.nameHi : n.name}</div>
             <div className="order-items">{lang === "hi" ? n.walkHi : n.walk}</div>
           </div>
         ))}

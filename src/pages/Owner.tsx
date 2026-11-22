@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import { dishes, feedback, nearby, rooms, STAFF, WIFI } from "../data";
 import { useDemo } from "../store";
 
@@ -26,13 +25,12 @@ export default function Owner() {
       <header className="owner-head">
         <div style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
           <div>
-            <div className="kicker">ATITHI</div>
-            <h1 className="head-title">The house</h1>
+            <img className="app-logo" src={`${import.meta.env.BASE_URL}brand/logo-white.png`} alt="AtithiConnect" />
+            <h1 className="head-title">Owner dashboard</h1>
             <div className="head-sub">Hotel Demo Indore · {STAFF.owner}</div>
           </div>
           <div className="head-actions">
-            <Link to="/reception" className="pill">Desk</Link>
-            <Link to="/" className="pill">Out</Link>
+            <span className="pill live dot">Live</span>
           </div>
         </div>
       </header>
@@ -128,7 +126,7 @@ export default function Owner() {
             <h3>Places to send a guest</h3>
             {nearby.map((n) => (
               <div key={n.name} style={{ padding: "12px 0", borderBottom: "1px solid var(--line)" }}>
-                <div style={{ fontFamily: "var(--serif)", fontSize: 24 }}>{n.name}</div>
+                <div style={{ fontFamily: "var(--serif)", fontSize: 18, fontWeight: 600 }}>{n.name}</div>
                 <div className="order-items">{n.walk}</div>
               </div>
             ))}
@@ -170,9 +168,9 @@ function Ring({ value }: { value: number }) {
   const r = 22, c = 2 * Math.PI * r, off = c * (1 - value);
   return (
     <svg width="64" height="64" viewBox="0 0 64 64" aria-hidden>
-      <circle cx="32" cy="32" r={r} fill="none" stroke="#efe8de" strokeWidth="8" />
-      <circle cx="32" cy="32" r={r} fill="none" stroke="#8a6a45" strokeWidth="8" strokeDasharray={`${c} ${c}`} strokeDashoffset={off} strokeLinecap="round" transform="rotate(-90 32 32)" />
-      <text x="32" y="36" textAnchor="middle" fontSize="11" fill="#7a736c">{Math.round(value * 100)}%</text>
+      <circle cx="32" cy="32" r={r} fill="none" stroke="#ECE6FF" strokeWidth="8" />
+      <circle cx="32" cy="32" r={r} fill="none" stroke="#5B12F0" strokeWidth="8" strokeDasharray={`${c} ${c}`} strokeDashoffset={off} strokeLinecap="round" transform="rotate(-90 32 32)" />
+      <text x="32" y="36" textAnchor="middle" fontSize="11" fill="#6B6585">{Math.round(value * 100)}%</text>
     </svg>
   );
 }
@@ -187,7 +185,7 @@ function Qr({ label }: { label: string }) {
         const x = i % cells, y = Math.floor(i / cells);
         const finder = (x < 3 && y < 3) || (x > cells - 4 && y < 3) || (x < 3 && y > cells - 4);
         const on = finder || bits[(x * 7 + y * 3) % bits.length];
-        return on ? <rect key={i} x={x} y={y} width="1" height="1" fill="#1a1714" /> : null;
+        return on ? <rect key={i} x={x} y={y} width="1" height="1" fill="#140B33" /> : null;
       })}
     </svg>
   );

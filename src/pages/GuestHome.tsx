@@ -25,7 +25,7 @@ export default function GuestHome() {
         <div className="veil" />
         <div className="inner">
           <div className="g-top">
-            <div className="g-mark">ATITHI</div>
+            <img className="app-logo" src={`${import.meta.env.BASE_URL}brand/logo-white.png`} alt="AtithiConnect" />
             <button className="lang-btn" onClick={() => setLang(lang === "en" ? "hi" : "en")} lang="hi">
               {lang === "en" ? "हिंदी" : "EN"}
             </button>
@@ -100,7 +100,7 @@ export default function GuestHome() {
       <section className="section" style={{ paddingBottom: 24 }}>
         <h2>{t("Offers for your stay", "आपके ठहरने पर ऑफ़र")}</h2>
         <div className="order-card">
-          <div className="oid" style={{ fontFamily: "var(--serif)", fontWeight: 500, fontSize: 22 }}>{t("Sunset chai", "सनसेट चाय")}</div>
+          <div className="oid" style={{ fontFamily: "var(--serif)", fontWeight: 600, fontSize: 17 }}>{t("Sunset chai", "सनसेट चाय")}</div>
           <p className="order-items">{t("A complimentary masala chai after 5 pm, on the house.", "शाम 5 बजे के बाद मुफ़्त मसाला चाय, होटल की ओर से।")}</p>
         </div>
       </section>

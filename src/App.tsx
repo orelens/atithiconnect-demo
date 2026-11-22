@@ -10,6 +10,7 @@ import Reception from "./pages/Reception";
 import Kitchen from "./pages/Kitchen";
 import Owner from "./pages/Owner";
 import StaffLogin from "./pages/StaffLogin";
+import DemoLayout from "./components/DemoLayout";
 
 export default function App() {
   const { toast } = useDemo();
@@ -17,7 +18,8 @@ export default function App() {
     <>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/guest" element={<GuestHome />} />
+        <Route element={<DemoLayout />}>
+          <Route path="/guest" element={<GuestHome />} />
         <Route path="/guest/food" element={<GuestFood />} />
         <Route path="/guest/requests" element={<GuestRequests />} />
         <Route path="/guest/chat" element={<GuestChat />} />
@@ -26,6 +28,7 @@ export default function App() {
         <Route path="/kitchen" element={<Kitchen />} />
         <Route path="/owner" element={<Owner />} />
         <Route path="/staff" element={<StaffLogin />} />
+        </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       {toast ? <div className="toast">{toast}</div> : null}
