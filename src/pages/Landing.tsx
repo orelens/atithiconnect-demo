@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import "../landing.css";
+import "../motion.css";
+import { useMotion } from "../motion";
 
 const B = import.meta.env.BASE_URL;
 const MAIL = "graphicdesigner.nikunj@gmail.com";
@@ -59,7 +61,9 @@ function HeroPhone() {
   const [s, setS] = useState(0);
   useEffect(() => { const t = setInterval(() => setS((x) => (x + 1) % STATUS.length), 1800); return () => clearInterval(t); }, []);
   return (
-    <div className="hp-wrap">
+    <div className="hp-wrap" data-tilt="9" data-tilt-global>
+      <div className="stage">
+      <div className="hp-glow" aria-hidden />
       <div className="hp">
         <div className="hp-screen">
           <div className="hp-notch" />
@@ -92,6 +96,11 @@ function HeroPhone() {
       <div className="float f2">
         <div className="fl-ic g">{icons.check}</div>
         <div><small>Kitchen</small><b>Order #1051 ready</b></div>
+      </div>
+      <div className="float f3">
+        <div className="fl-ic o">{icons.chart}</div>
+        <div><small>Owner · live</small><b>All requests on one screen</b></div>
+      </div>
       </div>
     </div>
   );
@@ -126,6 +135,7 @@ const faqs = [
 
 export default function Landing() {
   useReveal();
+  useMotion();
   const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState(false);
   const [open, setOpen] = useState<number | null>(0);
@@ -167,12 +177,13 @@ export default function Landing() {
       </header>
 
       {/* HERO */}
-      <section className="hero" id="top">
+      <section className="hero" id="top" data-scroll>
+        <div className="hero-amb" aria-hidden><i className="b1" /><i className="b2" /><i className="b3" /><span className="sweep" /><span className="grain" /></div>
         <Ribbons />
         <div className="mk-wrap hero-in">
-          <div className="hero-copy">
+          <div className="hero-copy intro">
             <span className="eyebrow-pill"><i />Guest app for hotels · no download</span>
-            <h1>Guests scan a QR. <mark>Everything</mark> opens on their phone.</h1>
+            <h1 className="split" aria-label="Guests scan a QR. Everything opens on their phone.">{["Guests","scan","a","QR."].map((w, i) => <span className="w" key={w} aria-hidden><span style={{ ["--i" as string]: i }}>{w}</span></span>)}<span className="w" aria-hidden><mark style={{ ["--i" as string]: 4 }}>Everything</mark></span>{["opens","on","their","phone."].map((w, i) => <span className="w" key={w} aria-hidden><span style={{ ["--i" as string]: i + 5 }}>{w}</span></span>)}</h1>
             <p className="hero-sub">Wi‑Fi, room service, towels, cleaning and a chat with reception, all in one simple page. Your staff get every request live on their screen.</p>
             <div className="hero-cta">
               <a href="#contact" className="btn btn-white">Book a free demo {icons.arrow}</a>
@@ -204,6 +215,24 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* FACTS */}
+      <section className="facts">
+        <div className="mk-wrap facts-row" data-stagger>
+          {[
+            [1, "QR card", "in every room"],
+            [0, "apps", "for guests to install"],
+            [4, "live screens", "guest, desk, kitchen, owner"],
+            [2, "languages", "English and हिंदी"],
+          ].map(([n, k, d]) => (
+            <div className="fact mo" key={String(k)}>
+              <b data-count={n}>0</b>
+              <span>{k}</span>
+              <small>{d}</small>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* HOW IT WORKS */}
       <section className="how" id="how">
         <div className="mk-wrap">
@@ -212,7 +241,7 @@ export default function Landing() {
             <h2>Three steps. That's it.</h2>
             <p>Your guest doesn't learn anything new, and neither does your staff.</p>
           </div>
-          <div className="steps3">
+          <div className="steps3 mo" data-stagger><span className="steps-line" aria-hidden />
             <div className="step3 rv">
               <div className="s-num">1</div>
               <div className="s-vis v1">
@@ -267,9 +296,9 @@ export default function Landing() {
             <h2>Everything a guest needs, <mark>in one place.</mark></h2>
             <p>Built for Indian hotels: simple for guests, quick for staff.</p>
           </div>
-          <div className="feat-grid">
+          <div className="feat-grid" data-stagger>
             {features.map((f) => (
-              <div key={f.t} className="feat rv">
+              <div key={f.t} className="feat rv" data-tilt="5">
                 <div className="feat-ic">{icons[f.ic as keyof typeof icons]}</div>
                 <h3>{f.t}</h3>
                 <p>{f.d}</p>
@@ -322,7 +351,7 @@ export default function Landing() {
             <p>AtithiConnect replaces the room phone, paper menus and WhatsApp chaos with one simple flow you can see from anywhere.</p>
             <a href="#contact" className="btn btn-violet">Book a free demo {icons.arrow}</a>
           </div>
-          <div className="ben-list">
+          <div className="ben-list" data-stagger>
             {[
               ["bell", "Fewer calls to reception", "Requests arrive as tickets, so your desk can focus on guests in front of them."],
               ["rupee", "More food orders from rooms", "A menu with photos on every phone makes ordering easy, day and night."],
@@ -348,7 +377,7 @@ export default function Landing() {
             <h2>Click through it yourself.</h2>
             <p>A sample hotel with sample guests. Pick a screen and try it. Tip: request towels as the guest, then open Reception to see it arrive.</p>
           </div>
-          <div className="demo-grid">
+          <div className="demo-grid" data-stagger>
             {[
               ["/guest", "phone", "Guest app", "Room 101 · order food, ask for towels, chat", "Start here"],
               ["/reception", "desk", "Reception desk", "Accept requests and track every room"],
@@ -491,7 +520,7 @@ function DemoVideo() {
   }
   return (
     <>
-      <div className="vid-frame">
+      <div className="vid-frame" data-scroll>
         <video ref={ref} src={`${B}video/atithiconnect-promo.mp4`} poster={`${B}video/atithiconnect-promo-poster.jpg`}
           muted loop playsInline controls preload="metadata" onVolumeChange={(e) => setMuted(e.currentTarget.muted)}
           aria-label="AtithiConnect promo video" />
