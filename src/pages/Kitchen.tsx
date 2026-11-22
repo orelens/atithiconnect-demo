@@ -28,12 +28,11 @@ export default function Kitchen() {
       <header className="kitch-head">
         <div>
           <img className="app-logo" src={`${import.meta.env.BASE_URL}brand/logo-white.png`} alt="AtithiConnect" />
-          <div className="kicker" style={{marginTop:10}}>KITCHEN DISPLAY</div>
-          <h1 className="head-title" style={{ fontSize: 40 }}>{HOTEL}</h1>
+          <h1 className="head-title">Kitchen display</h1>
+          <div className="head-sub">{HOTEL} · new food orders appear here</div>
         </div>
         <div className="head-actions" style={{ marginTop: 8 }}>
-          <span style={{ fontSize: 13, color: "rgba(255,255,255,.6)", marginRight: 8 }}>Tap to arm the new-order sound</span>
-          <span className="pill">Alerts</span>
+          <span className={"pill" + (armed ? " live dot" : "")}>{armed ? "Sound on" : "Tap to turn sound on"}</span>
         </div>
       </header>
       <div className="k-cols">

@@ -503,3 +503,14 @@ h1.hi, h2.hi, .serif.hi, :lang(hi) .serif {
   .db-nav a { flex: 1; text-align: center; padding: 7px 8px; }
   .db-back { width: 38px; height: 38px; padding: 0; justify-content: center; font-size: 16px; }
 }
+.g-subhead { color: #fff; padding: calc(16px + var(--safe-t)) 18px 22px; background: radial-gradient(500px 200px at 90% -30%, rgba(255,255,255,.2), transparent 60%), linear-gradient(135deg, #4a0fd0, #5b12f0 50%, #7b2cff); border-radius: 0 0 26px 26px; }
+.phone .g-subhead { padding-top: 48px; }
+.g-subhead h1 { font-family: var(--display); font-size: 26px; font-weight: 600; margin-top: 20px; letter-spacing: -.01em; }
+.g-subhead p { font-size: 14px; opacity: .85; margin-top: 4px; line-height: 1.45; }
+.kitch-head { flex-wrap: wrap; padding-bottom: 18px; }
+.kitchen .k-col h2 { color: #fff; }
+.k-col h2 .k-count { display: inline-grid; place-items: center; min-width: 30px; height: 30px; border-radius: 999px; background: rgba(255,255,255,.12); color: #fff; font-size: 14px; margin-right: 10px; vertical-align: middle; }
+.role-list a { box-shadow: var(--shadow-soft); transition: border-color .15s; }
+.role-list a:hover { border-color: #b9a2ff; }
+.role-list .btn-title { font-family: var(--display); color: var(--ink); }
+@media (max-width: 900px) { .k-cols { padding: 8px 14px 32px; } }

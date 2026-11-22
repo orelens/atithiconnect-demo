@@ -13,7 +13,7 @@ export default function GuestRequests() {
   const mine = tickets.filter((x) => x.room === GUEST.room);
   return (
     <GuestShell>
-      <div className="section" style={{ paddingTop: 28 }}>
+      <div className="section" style={{ paddingTop: 20 }}>
         <h2>{t("Ask the team", "टीम से कहें")}</h2>
         <div className="req-grid">
           {reqMeta.map((r) => {

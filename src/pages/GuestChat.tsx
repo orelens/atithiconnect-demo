@@ -26,8 +26,8 @@ export default function GuestChat() {
 
   return (
     <GuestShell>
-      <div className="section" style={{ paddingTop: 28 }}>
-        <h2>{t("Chat with the desk", "डेस्क से बात करें")}</h2>
+      <div className="section" style={{ paddingTop: 20 }}>
+        
         <p className="empty" style={{ paddingTop: 0 }}>{t("Hotel Demo Indore · Reception", "होटल डेमो इंदौर · रिसेप्शन")}</p>
         <div style={{ display: "grid", gap: 10, marginTop: 8 }}>
           {msgs.map((m, i) => (

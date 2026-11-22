@@ -10,7 +10,7 @@ export default function GuestMore() {
 
   return (
     <GuestShell>
-      <div className="section" style={{ paddingTop: 28 }}>
+      <div className="section" style={{ paddingTop: 20 }}>
         <h2>{t("Your stay", "आपका ठहरना")}</h2>
         <div className="order-card">
           <div className="oid" style={{ fontFamily: "var(--serif)", fontWeight: 500, fontSize: 20 }}>{lang === "hi" ? GUEST.formalHi : GUEST.formal}</div>
