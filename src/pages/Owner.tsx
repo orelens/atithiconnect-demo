@@ -1,3 +1,4 @@
+import InstallApp from "../components/InstallApp";
 import { useMemo, useState } from "react";
 import { dishes, feedback, nearby, rooms, STAFF, WIFI } from "../data";
 import { useDemo } from "../store";
@@ -30,6 +31,7 @@ export default function Owner() {
             <div className="head-sub">Hotel Demo Indore · {STAFF.owner}</div>
           </div>
           <div className="head-actions">
+            <InstallApp app="owner" />
             <span className="pill live dot">Live</span>
           </div>
         </div>

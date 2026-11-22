@@ -1,4 +1,6 @@
+import { useState } from "react";
 import GuestShell from "../components/GuestShell";
+import RequestSheet, { StatusSteps } from "../components/RequestSheet";
 import { GUEST, requests as reqMeta } from "../data";
 import { ago, useDemo } from "../store";
 import { IconClean, IconLuggage, IconRepair, IconTowels, IconWake, IconWater } from "../components/Icons";
@@ -9,7 +11,8 @@ const icons: Record<string, typeof IconTowels> = {
 };
 
 export default function GuestRequests() {
-  const { lang, t, tickets, addRequest } = useDemo();
+  const { lang, t, tickets } = useDemo();
+  const [pick, setPick] = useState<(typeof reqMeta)[number] | null>(null);
   const mine = tickets.filter((x) => x.room === GUEST.room);
   return (
     <GuestShell>
@@ -19,10 +22,7 @@ export default function GuestRequests() {
           {reqMeta.map((r) => {
             const Icon = icons[r.icon];
             return (
-              <button key={r.id} className="req-card" onClick={() => addRequest({
-                room: GUEST.room, title: r.title, titleHi: r.titleHi, guest: GUEST.name,
-                department: r.department, detail: r.detail, detailHi: r.detailHi,
-              })}>
+              <button key={r.id} className="req-card" onClick={() => setPick(r)}>
                 <Icon />
                 <span>{lang === "hi" ? r.titleHi : r.title.toUpperCase()}</span>
               </button>
@@ -39,9 +39,11 @@ export default function GuestRequests() {
               <span className={"badge " + x.status}>{label(x.status, lang)}</span>
             </div>
             <div className="order-items">{lang === "hi" ? x.detailHi : x.detail} · {ago(x.agoMin, lang)}</div>
+            <StatusSteps status={x.status} />
           </article>
         ))}
       </div>
+      <RequestSheet item={pick} onClose={() => setPick(null)} />
     </GuestShell>
   );
 }

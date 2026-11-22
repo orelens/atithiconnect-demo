@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   type Dish,
   type Lang,
@@ -22,7 +22,7 @@ type Store = {
   cart: Cart;
   toast: string | null;
   flash: (msg: string) => void;
-  addRequest: (t: Omit<Ticket, "id" | "agoMin" | "status">) => void;
+  addRequest: (t: Omit<Ticket, "id" | "agoMin" | "status">) => string;
   setTicketStatus: (id: string, status: TicketStatus) => void;
   addToCart: (id: string, delta?: number) => void;
   setCartQty: (id: string, qty: number) => void;
@@ -34,14 +34,45 @@ type Store = {
 };
 
 const Ctx = createContext<Store | null>(null);
+const SHARE_KEY = "atithi-demo-state-v2";
+function loadShared(): { tickets: Ticket[]; orders: Order[]; seq: number } | null {
+  try {
+    const raw = localStorage.getItem(SHARE_KEY);
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    if (!d.ts || Date.now() - d.ts > 3 * 60 * 60 * 1000) return null; // fresh demo after 3 hours
+    return d;
+  } catch { return null; }
+}
 
 export function DemoProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>("en");
-  const [tickets, setTickets] = useState<Ticket[]>(initialTickets);
-  const [orders, setOrders] = useState<Order[]>(initialOrders);
+  const saved = useRef(loadShared());
+  const [tickets, setTickets] = useState<Ticket[]>(saved.current?.tickets ?? initialTickets);
+  const [orders, setOrders] = useState<Order[]>(saved.current?.orders ?? initialOrders);
   const [cart, setCart] = useState<Cart>({});
   const [toast, setToast] = useState<string | null>(null);
-  const [seq, setSeq] = useState(1051);
+  const [seq, setSeq] = useState(saved.current?.seq ?? 1051);
+  const fromOther = useRef(false);
+
+  // Share demo state between open tabs / installed apps on this device,
+  // so a guest request shows up on the Reception app in real time.
+  useEffect(() => {
+    if (fromOther.current) { fromOther.current = false; return; }
+    try { localStorage.setItem(SHARE_KEY, JSON.stringify({ tickets, orders, seq, ts: Date.now() })); } catch { /* private mode */ }
+  }, [tickets, orders, seq]);
+  useEffect(() => {
+    function onStorage(e: StorageEvent) {
+      if (e.key !== SHARE_KEY || !e.newValue) return;
+      try {
+        const d = JSON.parse(e.newValue);
+        fromOther.current = true;
+        setTickets(d.tickets); setOrders(d.orders); setSeq(d.seq);
+      } catch { /* ignore */ }
+    }
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   function flash(msg: string) {
     setToast(msg);
@@ -51,7 +82,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   function addRequest(partial: Omit<Ticket, "id" | "agoMin" | "status">) {
     const id = "t" + Date.now();
     setTickets((list) => [{ ...partial, id, agoMin: 0, status: "pending" }, ...list]);
-    flash(lang === "hi" ? "अनुरोध टीम तक पहुँच गया" : "The team has your request");
+    return id;
   }
 
   function setTicketStatus(id: string, status: TicketStatus) {
@@ -109,7 +140,6 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     };
     setOrders((list) => [order, ...list]);
     setCart({});
-    flash(lang === "hi" ? `आर्डर #${id} रसोई तक गया` : `Order #${id} is in the kitchen`);
     return id;
   }
 

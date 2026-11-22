@@ -1,5 +1,8 @@
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAppShell, type AppKey } from "../pwa";
+
+const appFor: Record<string, AppKey> = { reception: "desk", owner: "owner", kitchen: "kitchen" };
 
 const B = import.meta.env.BASE_URL;
 const roles = [
@@ -34,6 +37,7 @@ export default function DemoLayout() {
   const wide = useWide();
   const isGuest = role === "guest";
   useEffect(() => { window.scrollTo(0, 0); }, [role]);
+  useEffect(() => { useAppShell(appFor[role] || null); }, [role]);
 
   return (
     <>

@@ -1,6 +1,7 @@
-import { useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { rooms, STAFF, type TicketStatus } from "../data";
 import { ago, useDemo } from "../store";
+import InstallApp from "../components/InstallApp";
 
 const tabs = ["Tickets", "Rooms", "Chat", "Desk"] as const;
 
@@ -9,6 +10,18 @@ export default function Reception() {
   const [tab, setTab] = useState<(typeof tabs)[number]>("Tickets");
   const [armed, setArmed] = useState(false);
   const open = tickets.filter((t) => t.status !== "done").length;
+  const [seen, setSeen] = useState<Set<string>>(() => new Set());
+  const fresh = tickets.filter((t) => t.status === "pending" && isNew(t.id) && !seen.has(t.id));
+  const banner = fresh[0];
+  useEffect(() => {
+    if (!banner) return;
+    beep();
+    if ("Notification" in window && Notification.permission === "granted") {
+      navigator.serviceWorker?.getRegistration().then((r) => r?.showNotification(`New request · Room ${banner.room}`, { body: `${banner.title} — ${banner.detail}`, icon: `${import.meta.env.BASE_URL}pwa/desk-192.png`, tag: banner.id }));
+    }
+    const id = window.setTimeout(() => setSeen((s) => new Set(s).add(banner.id)), 6000);
+    return () => window.clearTimeout(id);
+  }, [banner?.id]);
 
   function act(id: string, status: TicketStatus) {
     setTicketStatus(id, status);
@@ -27,6 +40,16 @@ export default function Reception() {
 
   return (
     <div className="staff-page" onClick={arm}>
+      {banner ? (
+        <div className="notif" onClick={() => setSeen((s) => new Set(s).add(banner.id))}>
+          <img src={`${import.meta.env.BASE_URL}pwa/desk-192.png`} alt="" />
+          <div style={{ flex: 1 }}>
+            <div className="nt"><span>ATITHICONNECT DESK</span><span>now</span></div>
+            <div className="nh">New request · Room {banner.room}</div>
+            <div className="nb">{banner.title} — {banner.detail}</div>
+          </div>
+        </div>
+      ) : null}
       <header className="desk-head">
         <img className="app-logo" src={`${import.meta.env.BASE_URL}brand/logo-white.png`} alt="AtithiConnect" />
         <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "flex-start", flexWrap: "wrap" }}>
@@ -36,6 +59,7 @@ export default function Reception() {
             <div className="head-note">Every guest request lands here. Accept it, start it, mark it done.</div>
           </div>
           <div className="head-actions">
+            <InstallApp app="desk" />
             <span className={"pill" + (armed ? " live dot" : "")}>{armed ? "Live" : "Sound off"}</span>
             <span className="pill">Alerts</span>
           </div>
@@ -52,7 +76,7 @@ export default function Reception() {
       {tab === "Tickets" && (
         <div className="ticket-grid">
           {tickets.map((t) => (
-            <article key={t.id} className="ticket">
+            <article key={t.id} className={"ticket" + (t.status === "pending" && isNew(t.id) ? " fresh" : "")}>
               <div className="t-top">
                 <div className="t-room">ROOM {t.room}</div>
                 <span className={"badge " + t.status}>{label(t.status)}</span>
@@ -120,4 +144,24 @@ const inp: CSSProperties = { background: "#fff", border: "1px solid var(--line)"
 
 function label(s: string) {
   return ({ pending: "Pending", accepted: "Accepted", progress: "In progress", done: "Done" } as Record<string, string>)[s] || s;
+}
+
+function isNew(id: string) {
+  const ts = Number(id.slice(1));
+  return id.length > 8 && ts > 0 && Date.now() - ts < 10 * 60 * 1000;
+}
+
+function beep() {
+  try {
+    const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const ac = new Ctx();
+    [880, 1320].forEach((f, i) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.frequency.value = f; o.type = "sine";
+      g.gain.setValueAtTime(0.0001, ac.currentTime + i * 0.12);
+      g.gain.exponentialRampToValueAtTime(0.12, ac.currentTime + i * 0.12 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + i * 0.12 + 0.3);
+      o.connect(g).connect(ac.destination); o.start(ac.currentTime + i * 0.12); o.stop(ac.currentTime + i * 0.12 + 0.32);
+    });
+  } catch { /* autoplay blocked */ }
 }

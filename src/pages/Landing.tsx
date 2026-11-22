@@ -352,6 +352,36 @@ export default function Landing() {
               </Link>
             ))}
           </div>
+          <div className="demo-extra">
+            <div className="qr-card rv">
+              <img className="qr-img" src={`${B}qr/room-101-qr.png`} alt="QR code that opens the Room 101 guest app" />
+              <div>
+                <span className="kick dark">Try it on your phone</span>
+                <h3>Scan for Room 101</h3>
+                <p>Open your phone camera and point it at this code. The guest app opens in the browser. No download, no login. This is the same QR we print on the standee in every room.</p>
+                <a className="qr-dl" href={`${B}qr/room-101-standee.png`} download>Download the room standee (print-ready)</a>
+              </div>
+            </div>
+            <div className="apps-card rv">
+              <span className="kick dark">Apps for your team</span>
+              <h3>Reception and owner get a real app.</h3>
+              <p>Install it on the front-desk phone, tablet or computer. It opens full screen from the home screen and alerts on every new request.</p>
+              <div className="app-list">
+                {[
+                  ["/reception", "desk", "AtithiConnect Desk", "Reception & housekeeping"],
+                  ["/owner", "owner", "AtithiConnect Owner", "Sales, rooms and team"],
+                  ["/kitchen", "kitchen", "AtithiConnect Kitchen", "Food orders, live"],
+                ].map(([to, k, n, d]) => (
+                  <Link key={to} to={to} className="app-row">
+                    <img src={`${B}pwa/${k}-192.png`} alt="" />
+                    <div><b>{n}</b><span>{d}</span></div>
+                    <span className="app-get">Download app</span>
+                  </Link>
+                ))}
+              </div>
+              <p className="apps-note">Android: tap <b>Download app</b> on the app page. iPhone: Share → <b>Add to Home Screen</b>.</p>
+            </div>
+          </div>
         </div>
       </section>
 

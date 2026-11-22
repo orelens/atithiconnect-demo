@@ -1,4 +1,6 @@
+import { useState } from "react";
 import GuestShell from "../components/GuestShell";
+import RequestSheet, { StatusSteps } from "../components/RequestSheet";
 import { GUEST, WIFI, requests as reqMeta } from "../data";
 import { ago, greeting, useDemo } from "../store";
 import { IconClean, IconCopy, IconLuggage, IconRepair, IconTowels, IconWake, IconWater } from "../components/Icons";
@@ -9,7 +11,9 @@ const icons: Record<string, typeof IconTowels> = {
 };
 
 export default function GuestHome() {
-  const { lang, setLang, t, orders, addRequest, flash } = useDemo();
+  const { lang, setLang, t, orders, tickets, flash } = useDemo();
+  const [pick, setPick] = useState<(typeof reqMeta)[number] | null>(null);
+  const myReq = tickets.filter((x) => x.room === GUEST.room && x.id.startsWith("t1") && x.id.length > 6).slice(0, 2);
   const greet = greeting(lang);
   const mine = orders.filter((o) => o.room === GUEST.room && o.status !== "cancelled" && o.status !== "served");
 
@@ -61,17 +65,7 @@ export default function GuestHome() {
               <button
                 key={r.id}
                 className="req-card"
-                onClick={() =>
-                  addRequest({
-                    room: GUEST.room,
-                    title: r.title,
-                    titleHi: r.titleHi,
-                    guest: GUEST.name,
-                    department: r.department,
-                    detail: r.detail,
-                    detailHi: r.detailHi,
-                  })
-                }
+                onClick={() => setPick(r)}
               >
                 <Icon />
                 <span>{lang === "hi" ? r.titleHi : r.title.toUpperCase()}</span>
@@ -80,6 +74,22 @@ export default function GuestHome() {
           })}
         </div>
       </section>
+
+      {myReq.length ? (
+        <section className="section">
+          <h2>{t("Your requests", "आपके अनुरोध")}</h2>
+          {myReq.map((x) => (
+            <article key={x.id} className="order-card req-live" style={{ marginBottom: 10 }}>
+              <div className="order-top">
+                <div className="oid" style={{ fontFamily: "var(--display)", fontWeight: 600 }}>{lang === "hi" ? x.titleHi : x.title}</div>
+                <span className={"badge " + x.status}>{reqLabel(x.status, lang)}</span>
+              </div>
+              <div className="order-items">{lang === "hi" ? x.detailHi : x.detail}</div>
+              <StatusSteps status={x.status} />
+            </article>
+          ))}
+        </section>
+      ) : null}
 
       <section className="section">
         <h2>{t("Your orders", "आपके ऑर्डर")}</h2>
@@ -104,8 +114,15 @@ export default function GuestHome() {
           <p className="order-items">{t("A complimentary masala chai after 5 pm, on the house.", "शाम 5 बजे के बाद मुफ़्त मसाला चाय, होटल की ओर से।")}</p>
         </div>
       </section>
+      <RequestSheet item={pick} onClose={() => setPick(null)} />
     </GuestShell>
   );
+}
+
+function reqLabel(s: string, lang: "en" | "hi") {
+  const m: Record<string, [string, string]> = { pending: ["Pending", "लंबित"], accepted: ["Accepted", "स्वीकृत"], progress: ["On the way", "आ रहा है"], done: ["Done", "हो गया"] };
+  const r = m[s] || [s, s];
+  return lang === "hi" ? r[1] : r[0];
 }
 
 const HOTEL_UP = "HOTEL DEMO INDORE";

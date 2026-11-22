@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { HOTEL, type Order, type OrderStatus } from "../data";
 import { ago, useDemo } from "../store";
+import InstallApp from "../components/InstallApp";
 
 export default function Kitchen() {
   const { orders, setOrderStatus, flash } = useDemo();
@@ -32,6 +33,7 @@ export default function Kitchen() {
           <div className="head-sub">{HOTEL} · new food orders appear here</div>
         </div>
         <div className="head-actions" style={{ marginTop: 8 }}>
+            <InstallApp app="kitchen" />
           <span className={"pill" + (armed ? " live dot" : "")}>{armed ? "Sound on" : "Tap to turn sound on"}</span>
         </div>
       </header>
