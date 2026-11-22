@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import "../landing.css";
 
@@ -246,6 +246,18 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* SEE IT IN ACTION */}
+      <section className="action" id="video">
+        <div className="mk-wrap">
+          <div className="sec-head rv">
+            <span className="kick">See it in action</span>
+            <h2>One system, connecting guests and your team.</h2>
+            <p>A one-minute look at how AtithiConnect turns every guest request into a live task for the right team.</p>
+          </div>
+          <div className="rv"><DemoVideo /></div>
+        </div>
+      </section>
+
       {/* FEATURES */}
       <section className="features" id="features">
         <Ribbons className="soft" />
@@ -456,5 +468,41 @@ export default function Landing() {
         <div className="mk-wrap foot-base"><span>© 2026 AtithiConnect</span><span>Demo uses a sample hotel and sample guests.</span></div>
       </footer>
     </div>
+  );
+}
+
+function DemoVideo() {
+  const ref = useRef<HTMLVideoElement>(null);
+  const [muted, setMuted] = useState(true);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) v.play().catch(() => {});
+      else v.pause();
+    }, { threshold: 0.45 });
+    io.observe(v);
+    return () => io.disconnect();
+  }, []);
+  function toggle() {
+    const v = ref.current; if (!v) return;
+    v.muted = !v.muted; setMuted(v.muted);
+    if (!v.muted) v.play().catch(() => {});
+  }
+  return (
+    <>
+      <div className="vid-frame">
+        <video ref={ref} src={`${B}video/atithiconnect-promo.mp4`} poster={`${B}video/atithiconnect-promo-poster.jpg`}
+          muted loop playsInline controls preload="metadata" onVolumeChange={(e) => setMuted(e.currentTarget.muted)}
+          aria-label="AtithiConnect promo video" />
+        {muted ? (
+          <button className="vid-sound" onClick={toggle}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5z" /><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12" /></svg>
+            Tap for sound
+          </button>
+        ) : null}
+      </div>
+      <div className="vid-cap">AtithiConnect · product film · 55 sec</div>
+    </>
   );
 }
